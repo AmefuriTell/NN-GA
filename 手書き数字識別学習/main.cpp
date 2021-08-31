@@ -1,16 +1,51 @@
 #include <bits/stdc++.h>
 #include "NN.hpp"
 #include "matrix.hpp"
+#include "GA.hpp"
+
+void GA::CalcScore(NN wb)
+{
+    for (int i = 0; i < BiontNumber; i++)
+    {
+        wb.InputWB(genome[i].Chromosome);
+        wb.CalcNN();
+        genome[i].score = wb.LossFunction();
+        std::cerr << i << " " << genome[i].score << std::endl;
+    }
+    return;
+}
 
 std::vector<std::pair<int, std::vector<int>>> load_data(int);
 
 int main()
 {
-    std::vector<std::pair<int, std::vector<int>>> data = load_data(1000);
+    srand((unsigned)time(NULL));
 
-    NN NeuralNetwork(std::vector<int>{28 * 28, 50, 10}, 1000);
+    std::vector<std::pair<int, std::vector<int>>> data = load_data(100);
+
+    NN NeuralNetwork(std::vector<int>{28 * 28, 50, 10}, 100);
     NeuralNetwork.InputX(data);
 
+    GA WeightBias(28 * 28 * 50 + 50 * 10 + 50 + 10, 100);
+    WeightBias.MakeFirstGenome();
+    int generation = 0;
+
+    while (generation < 100000)
+    {
+        WeightBias.CalcScore(NeuralNetwork);
+        WeightBias.ScoreSortAsc();
+
+        std::cout << WeightBias.genome[0].score << std::endl;
+        for (int i = 0; i < WeightBias.Length; i++)
+        {
+            std::cout << std::fixed << std::setprecision(19) << WeightBias.genome[0].Chromosome[i] << " ";
+        }
+        std::cout << std::endl;
+
+        WeightBias.CreateNewGeneration(5, 60, 35);
+
+        generation++;
+    }
     
 }
 

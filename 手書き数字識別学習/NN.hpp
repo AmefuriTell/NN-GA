@@ -31,6 +31,7 @@ class NN
     long double sigmoid(long double);
     matrix sigmoid(matrix);
     matrix identity_function(matrix);
+    matrix softmax(matrix);
     void CalcNN();
     void PrintLayerNumber();
     long double LossFunction();

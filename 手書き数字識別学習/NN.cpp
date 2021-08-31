@@ -156,6 +156,25 @@ matrix NN::identity_function(matrix x)
 {
     return x;
 }
+matrix NN::softmax(matrix x)
+{
+    matrix ret = x;
+    for (int i = 0; i < batch_size; i++)
+    {
+        long double denominator = 0, maxi = x.mat[i][0];
+        for (int j = 1; j < 10; j++)maxi = std::max(maxi, x.mat[i][j]);
+        
+        for (int j = 0; j < 10; j++)
+        {
+            denominator += expl(maxi - x.mat[i][j]);
+        }
+        for (int j = 0; j < 10; j++)
+        {
+            ret.mat[i][j] = expl(maxi - x.mat[i][j]) / denominator;
+        }
+    }
+    return ret;
+}
 void NN::CalcNN()
 {
     matrix Z = X, A;
@@ -165,6 +184,9 @@ void NN::CalcNN()
         Z = sigmoid(A);
     }
     Y = identity_function(A);
+    Y = softmax(Y);
+
+    return;
 }
 long double NN::LossFunction()
 {
