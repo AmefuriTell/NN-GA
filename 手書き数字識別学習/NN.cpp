@@ -5,15 +5,36 @@ NN::NN()
 }
 NN::NN(std::vector<int> l)
 {
+    batch_size = 1;
     layer_num = l;
-    X.mat.resize(1);
-    X.mat[0].resize(layer_num[0]);
+    init();
+}
+NN::NN(std::vector<int> l, int batch)
+{
+    batch_size = batch;
+    layer_num = l;
+    init();
+}
+NN::~NN()
+{
+}
+
+void NN::init()
+{
+    X.mat.resize(batch_size);
+    for (int i = 0; i < batch_size; i++)
+    {
+        X.mat[i].resize(layer_num[0]);
+    }
     B.resize(layer_num.size() - 1);
     W.resize(layer_num.size() - 1);
     for (int i = 1; i < layer_num.size(); i++)
     {
-        B[i - 1].mat.resize(1);
-        B[i - 1].mat[0].resize(layer_num[i]);
+        B[i - 1].mat.resize(batch_size);
+        for (int j = 0; j < batch_size; j++)
+        {
+            B[i - 1].mat[j].resize(layer_num[i]);
+        }
 
         W[i - 1].mat.resize(layer_num[i - 1]);
         for (int j = 0; j < layer_num[i - 1]; j++)
@@ -23,17 +44,17 @@ NN::NN(std::vector<int> l)
     }
 }
 
-NN::~NN()
-{
-}
-
 void NN::InputX()
 {
-    std::cout << "入力層 : " << layer_num[0] << std::endl;
-    for (int i = 0; i < layer_num[0]; i++)
+    std::cout << "蜈･蜉帛ｱ､ : " << batch_size << " * " << layer_num[0] << std::endl;
+    for (int j = 0; j < batch_size; j++)
     {
-        std::cin >> X.mat[0][i];
+        for (int i = 0; i < layer_num[0]; i++)
+        {
+            std::cin >> X.mat[j][i];
+        }
     }
+    
     X.Print();
     return;
 }
@@ -41,7 +62,7 @@ void NN::InputWeight()
 {
     for (int i = 0; i < layer_num.size() - 1; i++)
     {
-        std::cout << "重み" << i + 1 << " : " << layer_num[i] << " * " << layer_num[i + 1] << std::endl;
+        std::cout << "驥阪∩" << i + 1 << " : " << layer_num[i] << " * " << layer_num[i + 1] << std::endl;
         for (int j = 0; j < layer_num[i]; j++)
         {
             for (int k = 0; k < layer_num[i + 1]; k++)
@@ -57,13 +78,61 @@ void NN::InputBias()
 {
     for (int i = 0; i < layer_num.size() - 1; i++)
     {
-        std::cout << "バイアス" << i + 1 << " : " <<  layer_num[i + 1] << std::endl;
+        std::cout << "繝舌う繧｢繧ｹ" << i + 1 << " : " <<  layer_num[i + 1] << std::endl;
         for (int j = 0; j < layer_num[i + 1]; j++)
         {
             std::cin >> B[i].mat[0][j];
         }
+        for (int j = 1; j < batch_size; j++)
+        {
+            B[i].mat[j] = B[i].mat[0];
+        }
+        
         B[i].Print();
     }
+    return;
+}
+void NN::InputX(std::vector<std::pair<int, std::vector<int>>> in)
+{
+    ans_data = in;
+    for (int i = 0; i < batch_size; i++)
+    {
+        for (int j = 0; j < layer_num[0]; j++)
+        {
+            X.mat[i][j] = ans_data[i].second[j];
+        }
+    }
+    
+    return;
+}
+void NN::InputWB(std::vector<long double> chromo)
+{
+    int count = 0;
+    for (int i = 0; i < layer_num.size() - 1; i++)
+    {
+        for (int j = 0; j < layer_num[i]; j++)
+        {
+            for (int k = 0; k < layer_num[i + 1]; k++)
+            {
+                W[i].mat[j][k] = chromo[count];
+                count++;
+            }
+        }
+    }
+    
+    for (int i = 0; i < layer_num.size() - 1; i++)
+    {
+        for (int j = 0; j < layer_num[i + 1]; j++)
+        {
+            B[i].mat[0][j] = chromo[count];
+            count++;
+        }
+        for (int j = 1; j < batch_size; j++)
+        {
+            B[i].mat[j] = B[i].mat[0];
+        }
+    }
+
     return;
 }
 
@@ -95,8 +164,24 @@ void NN::CalcNN()
         A = Z * W[i] + B[i];
         Z = sigmoid(A);
     }
-    
     Y = identity_function(A);
+}
+long double NN::LossFunction()
+{
+    long double res = 0;
+
+    for (int i = 0; i < batch_size; i++)
+    {
+        for (int j = 0; j < 10; j++)
+        {
+            if(ans_data[i].first == j)res += (1.0L - Y.mat[i][j]) * (1.0L - Y.mat[i][j]);
+            else res += Y.mat[i][j] * Y.mat[i][j];
+        }
+    }
+    
+    res *= 0.5;
+
+    return res;
 }
 
 void NN::PrintLayerNumber()

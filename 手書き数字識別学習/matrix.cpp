@@ -15,6 +15,7 @@ matrix::~matrix()
 
 void matrix::Print()
 {
+    std::cout << std::fixed << std::setprecision(18);
     for (int i = 0; i < mat.size(); i++)
     {
         for (int j = 0; j < mat[i].size(); j++)
