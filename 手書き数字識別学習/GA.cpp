@@ -46,6 +46,7 @@ void GA::ScoreSortDec()//スコアを降順にソート
 
 void GA::CreateNewGeneration(int SaveNum, int CrossNum, int NewNum)//SaveNum体残してCrossNum体を交配で作成。新しい遺伝子をNewNum体作成
 {
+    //乱数生成
     std::mt19937_64 engine(rand());
     std::normal_distribution<long double> dist(0.0L, 1.0L);
     srand((unsigned int)time(NULL));
@@ -54,60 +55,58 @@ void GA::CreateNewGeneration(int SaveNum, int CrossNum, int NewNum)//SaveNum体残
     int CrossGenomeNumber = CrossNum;
     int CreateNewGenomeNumber = NewNum;
 
-    int ChildlenNum = 0;
-    for (int i = 0; i < SaveGenomeNumber; i++)
+    //エリートを保存
+    int i = 0;
+    for (i = 0; i < SaveGenomeNumber; i++)
     {
         Newgenome[i].Chromosome = genome[i].Chromosome;
-        ChildlenNum++;
     }
 
-    for (int i = 0; i < CrossGenomeNumber / 2; i++)
+    //交差
+    for (; i < BiontNumber - CreateNewGenomeNumber; i++)
     {
-        int Father = 0, Mother = 0;
-        do
+        //選択する
+        int Father = select(), Mother = select();
+
+        //交差する
+        for (int j = 0; j < BiontNumber; j++)
         {
-            Father = rand() % SaveNum;
-            Mother = rand() % BiontNumber;
-        } while (Father == Mother);
+            if(rand() % 2)Newgenome[i].Chromosome[j] = genome[Father].Chromosome[j];
+            else Newgenome[i].Chromosome[j] = genome[Mother].Chromosome[j];
 
-
-        Newgenome[ChildlenNum].Chromosome = genome[Father].Chromosome;
-        Newgenome[ChildlenNum + 1].Chromosome = genome[Mother].Chromosome;
-
-        for (int j = 0; j < Length; j++)
-        {
-            if (rand() % 2 == 0)
-            {
-                Newgenome[ChildlenNum].Chromosome[j] = genome[Mother].Chromosome[j];
-                Newgenome[ChildlenNum + 1].Chromosome[j] = genome[Father].Chromosome[j];
-            }
+            //突然変異
+            if (rand() % 100 < 2)Newgenome[i].Chromosome[j] = dist(engine);
         }
-        ChildlenNum += 2;
     }
 
-    for (int i = 0; i < CrossGenomeNumber; i++)
+    for (; i < BiontNumber; i++)
     {
         for (int j = 0; j < Length; j++)
         {
-            if (rand() % 100 < 2)
-            {
-                Newgenome[ChildlenNum].Chromosome[j] = dist(engine);
-            }
+            Newgenome[i].Chromosome[j] = dist(engine);
         }
-    }
-    
-
-    for (int i = 0; i < CreateNewGenomeNumber; i++)
-    {
-        for (int j = 0; j < Length; j++)
-        {
-            Newgenome[ChildlenNum].Chromosome[j] = dist(engine);
-        }
-        ChildlenNum++;
     }
 
     for (int i = 0; i < BiontNumber; i++)
     {
         genome[i] = Newgenome[i];
     }
+}
+
+int GA::select()
+{
+    int rank, denom;
+    long double prob, r;
+
+    denom = BiontNumber * (BiontNumber + 1) / 2;
+    r = (long double)rand() / (long double)RAND_MAX;
+
+    for (rank = 0; rank < BiontNumber; rank++)
+    {
+        prob = (long double)(BiontNumber - rank + 1) / denom;
+        if(r <= prob)break;
+        r -= prob;
+    }
+    
+    return rank - 1;
 }

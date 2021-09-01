@@ -29,6 +29,8 @@ public:
     void ScoreSortDec();
 
     void CreateNewGeneration(int, int, int);
+    int select();
+    void crossover(int, int);
 };
 
 #endif
