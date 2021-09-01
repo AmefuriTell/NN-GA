@@ -1,6 +1,6 @@
 #include "GA.hpp"
 
-GA::GA(int L, int BN)//長さLの遺伝子をもつ個体をBN個生成
+GA::GA(int L, int BN)//????L???`?q?????????BN?????
 {
     srand((unsigned int)time(NULL));
     Length = L;
@@ -14,7 +14,7 @@ GA::GA(int L, int BN)//長さLの遺伝子をもつ個体をBN個生成
     }
 }
 
-void GA::MakeFirstGenome()//遺伝子を最初に構築
+void GA::MakeFirstGenome()//??`?q???????\?z
 {
 
     std::mt19937_64 engine(rand());
@@ -31,22 +31,22 @@ void GA::MakeFirstGenome()//遺伝子を最初に構築
 }
 
 
-void GA::FormatScore()//スコアの初期化
+void GA::FormatScore()//?X?R?A???????
 {
     for (int i = 0; i < BiontNumber; i++)genome[i].score = 0;
 }
-void GA::ScoreSortAsc()//スコアを昇順にソート
+void GA::ScoreSortAsc()//?X?R?A????????\?[?g
 {
     std::sort(genome.begin(), genome.end(), [](Genome& a, Genome& b) {return a.score < b.score; });
 }
-void GA::ScoreSortDec()//スコアを降順にソート
+void GA::ScoreSortDec()//?X?R?A???~????\?[?g
 {
     std::sort(genome.begin(), genome.end(), [](Genome& a, Genome& b) {return a.score > b.score; });
 }
 
-void GA::CreateNewGeneration(int SaveNum, int CrossNum, int NewNum)//SaveNum体残してCrossNum体を交配で作成。新しい遺伝子をNewNum体作成
+void GA::CreateNewGeneration(int SaveNum, int CrossNum, int NewNum)//SaveNum??c????CrossNum?????z????B?V??????`?q??NewNum???
 {
-    //乱数生成
+    //????????
     std::mt19937_64 engine(rand());
     std::normal_distribution<long double> dist(0.0L, 1.0L);
     srand((unsigned int)time(NULL));
@@ -55,26 +55,27 @@ void GA::CreateNewGeneration(int SaveNum, int CrossNum, int NewNum)//SaveNum体残
     int CrossGenomeNumber = CrossNum;
     int CreateNewGenomeNumber = NewNum;
 
-    //エリートを保存
+    //?G???[?g????
     int i = 0;
     for (i = 0; i < SaveGenomeNumber; i++)
     {
         Newgenome[i].Chromosome = genome[i].Chromosome;
     }
 
-    //交差
-    for (; i < BiontNumber - CreateNewGenomeNumber; i++)
+    //????
+    for (; i < SaveGenomeNumber + CrossGenomeNumber; i++)
     {
-        //選択する
+        //?I??????
         int Father = select(), Mother = select();
+        //std::cout << Father << " " << BiontNumber << " " << Mother << std::endl;
 
-        //交差する
+        //????????
         for (int j = 0; j < BiontNumber; j++)
         {
             if(rand() % 2)Newgenome[i].Chromosome[j] = genome[Father].Chromosome[j];
             else Newgenome[i].Chromosome[j] = genome[Mother].Chromosome[j];
 
-            //突然変異
+            //??R?ψ?
             if (rand() % 100 < 2)Newgenome[i].Chromosome[j] = dist(engine);
         }
     }
@@ -108,5 +109,17 @@ int GA::select()
         r -= prob;
     }
     
-    return rank - 1;
+    return rank;
+}
+
+void GA::CalcScore(NN wb)
+{
+    for (int i = 0; i < BiontNumber; i++)
+    {
+        wb.InputWB(genome[i].Chromosome);
+
+        wb.CalcNN();
+        genome[i].score = wb.LossFunction();
+    }
+    return;
 }
