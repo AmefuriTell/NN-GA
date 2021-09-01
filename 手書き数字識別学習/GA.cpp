@@ -1,6 +1,5 @@
 #include "GA.hpp"
 
-
 GA::GA(int L, int BN)//長さLの遺伝子をもつ個体をBN個生成
 {
     srand((unsigned int)time(NULL));
@@ -18,8 +17,8 @@ GA::GA(int L, int BN)//長さLの遺伝子をもつ個体をBN個生成
 void GA::MakeFirstGenome()//遺伝子を最初に構築
 {
 
-    std::mt19937_64(std::random_device{}());
-    std::normal_distribution<> dist(0.0L,1.0L);
+    std::mt19937_64 engine(rand());
+    std::normal_distribution<long double> dist(0.0L, 1.0L);
 
     FormatScore();
     for (int i = 0; i < BiontNumber; i++)
@@ -47,8 +46,8 @@ void GA::ScoreSortDec()//スコアを降順にソート
 
 void GA::CreateNewGeneration(int SaveNum, int CrossNum, int NewNum)//SaveNum体残してCrossNum体を交配で作成。新しい遺伝子をNewNum体作成
 {
-    std::mt19937_64(std::random_device{}());
-    std::normal_distribution<> dist(0.0L,1.0L);
+    std::mt19937_64 engine(rand());
+    std::normal_distribution<long double> dist(0.0L, 1.0L);
     srand((unsigned int)time(NULL));
 
     int SaveGenomeNumber = SaveNum;
@@ -85,6 +84,18 @@ void GA::CreateNewGeneration(int SaveNum, int CrossNum, int NewNum)//SaveNum体残
         }
         ChildlenNum += 2;
     }
+
+    for (int i = 0; i < CrossGenomeNumber; i++)
+    {
+        for (int j = 0; j < Length; j++)
+        {
+            if (rand() % 100 < 2)
+            {
+                Newgenome[ChildlenNum].Chromosome[j] = dist(engine);
+            }
+        }
+    }
+    
 
     for (int i = 0; i < CreateNewGenomeNumber; i++)
     {

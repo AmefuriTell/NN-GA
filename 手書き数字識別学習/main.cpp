@@ -10,7 +10,6 @@ void GA::CalcScore(NN wb)
         wb.InputWB(genome[i].Chromosome);
         wb.CalcNN();
         genome[i].score = wb.LossFunction();
-        std::cerr << i << " " << genome[i].score << std::endl;
     }
     return;
 }
@@ -21,17 +20,16 @@ int main()
 {
     srand((unsigned)time(NULL));
 
-    std::vector<std::pair<int, std::vector<int>>> data = load_data(100);
-
     NN NeuralNetwork(std::vector<int>{28 * 28, 50, 10}, 100);
-    NeuralNetwork.InputX(data);
+    NeuralNetwork.InputX(load_data(100));
 
-    GA WeightBias(28 * 28 * 50 + 50 * 10 + 50 + 10, 100);
+    GA WeightBias(28 * 28 * 50 + 50 * 10 + 50 + 10, 1000);
     WeightBias.MakeFirstGenome();
     int generation = 0;
 
     while (generation < 100000)
     {
+        NeuralNetwork.InputX(load_data(100));
         WeightBias.CalcScore(NeuralNetwork);
         WeightBias.ScoreSortAsc();
 
@@ -42,7 +40,9 @@ int main()
         }
         std::cout << std::endl;
 
-        WeightBias.CreateNewGeneration(5, 60, 35);
+        std::cerr << generation << "¢‘ã " << WeightBias.genome[0].score << std::endl;
+
+        WeightBias.CreateNewGeneration(1, 900, 99);
 
         generation++;
     }
@@ -63,10 +63,24 @@ std::vector<std::pair<int, std::vector<int>>> load_data(int batch_num)
     char *data_f = new char[size_f];
     image_f.read(data_f, size_f);
 
-    for (int i = 0; i < size_f - 16; i++)
+    std::vector<int> laern_data_num(60000);
+    for (int i = 0; i < 60000; i++)
     {
-        if(i / (28 * 28) == batch_num)break;
-        ret[i / (28 * 28)].second.push_back((unsigned char)data_f[i + 16]);
+        laern_data_num[i] = i;
+    }
+    for (int i = 0; i < 60000; i++)
+    {
+        srand((unsigned int)time(NULL));
+        std::swap(laern_data_num[i], laern_data_num[rand() % 60000]);
+    }
+    
+    for (int i = 0; i < batch_num; i++)
+    {
+
+        for (int j = 0; j < 28 * 28; j++)
+        {
+            ret[i].second.push_back((unsigned char)data_f[laern_data_num[i] * 28 * 28 + j + 16]);
+        }
     }
 
     label_f.seekg(0, std::ios::end);
@@ -75,10 +89,10 @@ std::vector<std::pair<int, std::vector<int>>> load_data(int batch_num)
     char *data_l = new char[size_l];
     label_f.read(data_l, size_l);
 
-    for (int i = 0; i < size_l - 8; i++)
+    for (int i = 0; i < batch_num; i++)
     {
         if(i == batch_num)break;
-        ret[i].first = data_l[i + 8];
+        ret[i].first = data_l[laern_data_num[i] + 8];
     }
 /*
     for (int i = 0; i < batch_num; i++)

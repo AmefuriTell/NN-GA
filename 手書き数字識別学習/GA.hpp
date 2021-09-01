@@ -29,9 +29,6 @@ public:
     void ScoreSortDec();
 
     void CreateNewGeneration(int, int, int);
-
-    std::random_device seed;
-    std::mt19937_64 engine;
 };
 
 #endif
