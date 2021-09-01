@@ -1,3 +1,9 @@
 *.exe
 MNIST/
 .vscode/
+*.ax
+obj
+packfile
+hsptmp
+*.result
+*.bmp
