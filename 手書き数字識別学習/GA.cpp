@@ -67,10 +67,16 @@ void GA::CreateNewGeneration(int SaveNum, int CrossNum, int NewNum)//SaveNum??c?
     {
         //?I??????
         int Father = select(), Mother = select();
+        while (Father < 0 || Father >= BiontNumber || Mother < 0 || Mother >= BiontNumber || Father == Mother)
+        {
+            Father = select();
+            Mother = select();
+        }
+        
         //std::cout << Father << " " << BiontNumber << " " << Mother << std::endl;
 
         //????????
-        for (int j = 0; j < BiontNumber; j++)
+        for (int j = 0; j < Length; j++)
         {
             if(rand() % 2)Newgenome[i].Chromosome[j] = genome[Father].Chromosome[j];
             else Newgenome[i].Chromosome[j] = genome[Mother].Chromosome[j];
@@ -96,17 +102,20 @@ void GA::CreateNewGeneration(int SaveNum, int CrossNum, int NewNum)//SaveNum??c?
 
 int GA::select()
 {
-    int rank, denom;
-    long double prob, r;
+    //完全ランダム
+    return rand() % BiontNumber;
+
+    //ランキング方式
+    int rank;
+    long double prob = 0, r, denom;
 
     denom = BiontNumber * (BiontNumber + 1) / 2;
     r = (long double)rand() / (long double)RAND_MAX;
 
-    for (rank = 0; rank < BiontNumber; rank++)
+    for (rank = 1; rank < BiontNumber; rank++)
     {
-        prob = (long double)(BiontNumber - rank + 1) / denom;
+        prob += (long double)(BiontNumber - rank + 1) / denom;
         if(r <= prob)break;
-        r -= prob;
     }
     
     return rank;
