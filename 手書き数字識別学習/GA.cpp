@@ -66,11 +66,11 @@ void GA::CreateNewGeneration(int SaveNum, int CrossNum, int NewNum)//SaveNum??c?
     for (; i < SaveGenomeNumber + CrossGenomeNumber; i++)
     {
         //?I??????
-        int Father = select(), Mother = select();
+        int Father = Fatherselect(), Mother = Motherselect();
         while (Father < 0 || Father >= BiontNumber || Mother < 0 || Mother >= BiontNumber || Father == Mother)
         {
-            Father = select();
-            Mother = select();
+            Father = Fatherselect();
+            Mother = Motherselect();
         }
         
         //std::cout << Father << " " << BiontNumber << " " << Mother << std::endl;
@@ -100,19 +100,33 @@ void GA::CreateNewGeneration(int SaveNum, int CrossNum, int NewNum)//SaveNum??c?
     }
 }
 
-int GA::select()
+int GA::Fatherselect()
 {
-    //完全ランダム
-    return rand() % BiontNumber;
-
     //ランキング方式
     int rank;
     long double prob = 0, r, denom;
 
-    denom = BiontNumber * (BiontNumber + 1) / 2;
+    denom = (BiontNumber / 2) * ((BiontNumber / 2) + 1) / 2;
     r = (long double)rand() / (long double)RAND_MAX;
 
-    for (rank = 1; rank < BiontNumber; rank++)
+    for (rank = 1; rank < BiontNumber / 2; rank++)
+    {
+        prob += (long double)(BiontNumber - rank + 1) / denom;
+        if(r <= prob)break;
+    }
+    
+    return rank;
+}
+int GA::Motherselect()
+{
+    //ランキング方式
+    int rank;
+    long double prob = 0, r, denom;
+
+    denom = (BiontNumber / 1) * ((BiontNumber / 1) + 1) / 2;
+    r = (long double)rand() / (long double)RAND_MAX;
+
+    for (rank = 1; rank < BiontNumber / 1; rank++)
     {
         prob += (long double)(BiontNumber - rank + 1) / denom;
         if(r <= prob)break;
