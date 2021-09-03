@@ -19,7 +19,7 @@ int main()
     {
         NeuralNetwork.InputX(load_data(100));
         WeightBias.CalcScore(NeuralNetwork);
-        WeightBias.ScoreSortDec();
+        WeightBias.ScoreSortAsc();
 
         std::cout << WeightBias.genome[0].score << std::endl;
         for (int i = 0; i < WeightBias.Length; i++)

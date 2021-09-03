@@ -220,7 +220,7 @@ long double NN::LossFunction()
         rate = std::min(rate, buf);
         res += buf;
     }
-    res *= rate;
+    res /= rate;
     return res;
 }
 
