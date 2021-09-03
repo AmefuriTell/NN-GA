@@ -30,6 +30,8 @@ class NN
     void InputWB(std::vector<long double>);
     long double sigmoid(long double);
     matrix sigmoid(matrix);
+    long double relu(long double);
+    matrix relu(matrix);
     matrix identity_function(matrix);
     matrix softmax(matrix);
     void CalcNN();

@@ -152,6 +152,23 @@ matrix NN::sigmoid(matrix x)
     }
     return ans;
 }
+long double NN::relu(long double x)
+{
+    if(x > 0)return x;
+    return 0.0L;
+}
+matrix NN::relu(matrix x)
+{
+    matrix ans = x;
+    for (int i = 0; i < x.mat.size(); i++)
+    {
+        for (int j = 0; j < x.mat[i].size(); j++)
+        {
+            ans.mat[i][j] = relu(x.mat[i][j]);
+        }
+    }
+    return ans;
+}
 matrix NN::identity_function(matrix x)
 {
     return x;
@@ -190,19 +207,20 @@ void NN::CalcNN()
 }
 long double NN::LossFunction()
 {
-    long double res = 0;
+    long double rate = INFINITY, res = 0, buf = 0;
 
     for (int i = 0; i < batch_size; i++)
     {
+        buf = 0;
         for (int j = 0; j < 10; j++)
         {
-            if(ans_data[i].first == j)res += (1.0L - Y.mat[i][j]) * (1.0L - Y.mat[i][j]);
-            else res += Y.mat[i][j] * Y.mat[i][j];
+            if(ans_data[i].first == j)buf += (1.0L - Y.mat[i][j]) * (1.0L - Y.mat[i][j]);
+            else buf += Y.mat[i][j] * Y.mat[i][j];
         }
+        rate = std::min(rate, buf);
+        res += buf;
     }
-    
-    res *= 0.5;
-
+    res *= rate;
     return res;
 }
 

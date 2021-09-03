@@ -3,17 +3,6 @@
 #include "matrix.hpp"
 #include "GA.hpp"
 
-void GA::CalcScore(NN wb)
-{
-    for (int i = 0; i < BiontNumber; i++)
-    {
-        wb.InputWB(genome[i].Chromosome);
-        wb.CalcNN();
-        genome[i].score = wb.LossFunction();
-    }
-    return;
-}
-
 std::vector<std::pair<int, std::vector<int>>> load_data(int);
 
 int main()
@@ -21,9 +10,8 @@ int main()
     srand((unsigned)time(NULL));
 
     NN NeuralNetwork(std::vector<int>{28 * 28, 50, 10}, 100);
-    NeuralNetwork.InputX(load_data(100));
-
     GA WeightBias(28 * 28 * 50 + 50 * 10 + 50 + 10, 1000);
+
     WeightBias.MakeFirstGenome();
     int generation = 0;
 
@@ -31,7 +19,7 @@ int main()
     {
         NeuralNetwork.InputX(load_data(100));
         WeightBias.CalcScore(NeuralNetwork);
-        WeightBias.ScoreSortAsc();
+        WeightBias.ScoreSortDec();
 
         std::cout << WeightBias.genome[0].score << std::endl;
         for (int i = 0; i < WeightBias.Length; i++)

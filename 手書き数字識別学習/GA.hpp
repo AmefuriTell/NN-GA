@@ -29,7 +29,8 @@ public:
     void ScoreSortDec();
 
     void CreateNewGeneration(int, int, int);
-    int select();
+    int Fatherselect();
+    int Motherselect();
 };
 
 #endif
