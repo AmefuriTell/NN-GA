@@ -207,21 +207,13 @@ void NN::CalcNN()
 }
 long double NN::LossFunction()
 {
-    long double rate = INFINITY, res = 0, buf = 0;
-
+    long double delta = 1e-7;
+    long double ret = 0;
     for (int i = 0; i < batch_size; i++)
     {
-        buf = 0;
-        for (int j = 0; j < 10; j++)
-        {
-            if(ans_data[i].first == j)buf += (1.0L - Y.mat[i][j]) * (1.0L - Y.mat[i][j]);
-            else buf += Y.mat[i][j] * Y.mat[i][j];
-        }
-        rate = std::min(rate, buf);
-        res += buf;
+        ret += -logl(Y.mat[i][ans_data[i].first] + delta);
     }
-    res /= rate;
-    return res;
+    return ret;
 }
 
 void NN::PrintLayerNumber()

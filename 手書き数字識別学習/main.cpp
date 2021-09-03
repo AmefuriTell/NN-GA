@@ -4,6 +4,7 @@
 #include "GA.hpp"
 
 std::vector<std::pair<int, std::vector<int>>> load_data(int);
+std::vector<std::pair<int, std::vector<int>>> select_data(int);
 
 int main()
 {
@@ -14,6 +15,7 @@ int main()
 
     WeightBias.MakeFirstGenome();
     int generation = 0;
+    std::pair<int, std::vector<long double>> save;
 
     while (generation < 100000)
     {
@@ -21,16 +23,26 @@ int main()
         WeightBias.CalcScore(NeuralNetwork);
         WeightBias.ScoreSortAsc();
 
-        std::cout << WeightBias.genome[0].score << std::endl;
-        for (int i = 0; i < WeightBias.Length; i++)
-        {
-            std::cout << std::fixed << std::setprecision(19) << WeightBias.genome[0].Chromosome[i] << " ";
-        }
-        std::cout << std::endl;
-
         std::cerr << generation << "¢‘ã " << WeightBias.genome[0].score << std::endl;
 
-        WeightBias.CreateNewGeneration(1, 900, 99);
+        if(generation > 0 && (save.second == WeightBias.genome[0].Chromosome))
+        {
+            save.first++;
+        }
+        else
+        {
+            save.first = 0;
+            save.second = WeightBias.genome[0].Chromosome;
+
+            std::cout << WeightBias.genome[0].score << std::endl;
+            for (int i = 0; i < WeightBias.Length; i++)
+            {
+                std::cout << std::fixed << std::setprecision(19) << WeightBias.genome[0].Chromosome[i] << " ";
+            }
+            std::cout << std::endl;
+        }
+        if(save.first > 10)WeightBias.CreateNewGeneration(1, 99, 900);
+        else WeightBias.CreateNewGeneration(1, 900, 99);
 
         generation++;
     }

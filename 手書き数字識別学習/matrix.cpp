@@ -20,9 +20,9 @@ void matrix::Print()
     {
         for (int j = 0; j < mat[i].size(); j++)
         {
-            std::cout << mat[i][j] << "\t";
+            std::cerr << mat[i][j] << "\t";
         }
-        std::cout << std::endl;
+        std::cerr << std::endl;
     }
     printf("\n");
     return;
