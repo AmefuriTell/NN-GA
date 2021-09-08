@@ -1,0 +1,60 @@
+#packopt name "学習開始.exe"
+
+time =  __date__ + "." + __time__
+
+strrep time, ":", "."
+strrep time, "/", "."
+
+bat = "@echo off\n"
+bat += "cd " + dir_cur + "\n"
+bat += "g++ main.cpp GA.cpp matrix.cpp NN.cpp -o " + dir_cur + "/実行ファイル/" + time + ".exe & echo " + time + " & " + dir_cur + "/実行ファイル/" + time + ".exe" +" > " + "学習データ/" + time + ".result\n"
+bat += "pause"
+mes bat
+
+
+
+bat_file_name = dir_cur + "/バッチファイル/" + time + ".bat"
+mes bat_file_name
+notesel bat
+notesave bat_file_name
+
+result = "100000\n0\n100000\n0\n"
+notesel result
+notesave "学習データ/" + time + ".result
+mes bat_file_name
+exec bat_file_name
+
+end
+
+screen 0, 10000, 80 * 15, 0, -ginfo_dispx, 0
+repeat
+	result = ""
+    notesel result
+    noteload "学習データ/" + time + ".result"
+
+	noteget score, 0
+    score = double(score)
+    first_point = score * 15.0
+
+    redraw 0
+        color 255, 255, 255 : boxf
+        color 0, 0, 0
+        notesel result
+        pos 0, 0 : mes "" + (notemax / 2) + "世代目"
+        if(notemax / 2 - 1 < 0):continue
+        repeat notemax / 2 - 1
+            notesel result
+            noteget score, cnt * 2 + 2
+            score = double(score)
+    		second_point = score * 15.0
+			
+			line cnt, first_point, (cnt + 1), second_point
+			first_point = second_point
+            await 1
+        loop
+    redraw 1
+    bmpsave "画像データ/" + time + ".result.bmp"
+    wait 100
+loop
+
+end

@@ -1,0 +1,39 @@
+bgscr 0, 1000, 80 * 10, 0, 0, 0
+
+dialog "result", 16, "resultÉtÉ@ÉCÉã"
+if(stat == 0) : end
+file_path = refstr
+mes file_path
+
+exist file_path
+size = strsize
+
+wait 100
+
+repeat 1
+    notesel result
+    noteload file_path, size
+
+	noteget score, 0
+    score = double(score)
+    first_point = score * 10.0
+
+
+	color 255, 255, 255 : boxf
+    color 0, 0, 0
+    notesel result
+    pos 0, 0 : mes "" + (notemax / 2) + "ê¢ë„ñ⁄"
+    if(notemax / 2 - 1 < 0) : dialog : wait : continue
+    repeat notemax / 2 - 1
+        notesel result
+        noteget score, cnt * 2 + 2
+        score = double(score)
+		second_point = score * 10.0
+		
+		line cnt, first_point, (cnt + 1), second_point
+		first_point = second_point
+        await 1
+    loop
+    bmpsave file_path + ".bmp"
+    wait
+loop
