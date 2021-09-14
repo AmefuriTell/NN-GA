@@ -207,24 +207,26 @@ void NN::CalcNN()
 }
 long double NN::LossFunction()
 {
-
+/*
     long double d = 0.0000001;
     long double ret = 0;
     for (int i = 0; i < batch_size; i++)
     {
         ret -= logl(Y.mat[i][ans_data[i].first] + d);
     }
-    return ret / batch_size;
+    return ret;
+*/
 
-/*
-    long double delta = 0.0000001;
     long double ret = 0;
     for (int i = 0; i < batch_size; i++)
     {
-        ret += -logl(Y.mat[i][ans_data[i].first] + delta);
+        for (int j = 0; j < Y.mat[i].size(); j++)
+        {
+            if(ans_data[i].first == j)ret += (Y.mat[i][j] - 1) * (Y.mat[i][j] - 1);
+            else ret += Y.mat[i][j] * Y.mat[i][j];
+        }
     }
     return ret;
-*/
 }
 
 void NN::PrintLayerNumber()

@@ -18,16 +18,17 @@ int main()
     //NNの用意
     NN NeuralNetwork(std::vector<int>{28 * 28, 50, 10}, 100);
     NeuralNetwork.InputX(minsts.RandomGetMINSTBatch(100));
-    Population WeightBias(10000, 1000, 1, 28 * 28 * 50 + 50 * 10 + 50 + 10, 0.001, NeuralNetwork);
+    Population WeightBias(10000, 1000, 1, 28 * 28 * 50 + 50 * 10 + 50 + 10, 0.01, NeuralNetwork);
 
     int generation = 10000;
 
     std::cerr << "start!" << std::endl;
 
-    while (--generation)
+    while (true)
     {
         NeuralNetwork.InputX(minsts.RandomGetMINSTBatch(100));
         WeightBias.alternate(NeuralNetwork);
+        if(WeightBias.NowInd[0].score <= 0.2) break;
     }
     
 }
