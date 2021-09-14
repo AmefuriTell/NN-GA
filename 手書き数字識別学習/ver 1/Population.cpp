@@ -113,14 +113,15 @@ void Population::alternate(NN &wb)
     //交叉
     for (; i < POP_SIZE; i++)
     {
-        int father = select(), mother = select();
-        //int father = rand() % ELITE, mother = rand() % POP_SIZE;
+        //int father = select(), mother = select();
+        int father = rand() % ELITE, mother = rand() % POP_SIZE;
+        mother = select();
         while (father == mother)
         {
-            father = select();
+            //father = select();
             mother = select();
 
-            //father = rand() % ELITE;
+            father = rand() % ELITE;
             //mother = rand() % POP_SIZE;
         }
         
