@@ -62,7 +62,7 @@ void Individual::crossover(Individual &father, Individual &mother)
 //突然変異
 void Individual::mutate()
 {
-    for (int i = 0; i < CHROMO_SIZE; i++)
+    for (int i = ELIET; i < CHROMO_SIZE; i++)
     {
         if((long double)rand() / RAND_MAX < MUTATE_PROB)
         {
