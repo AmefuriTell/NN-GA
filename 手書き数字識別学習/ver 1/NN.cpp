@@ -183,11 +183,11 @@ matrix NN::softmax(matrix x)
         
         for (int j = 0; j < 10; j++)
         {
-            denominator += expl(maxi - x.mat[i][j]);
+            denominator += expl(x.mat[i][j] - maxi);
         }
         for (int j = 0; j < 10; j++)
         {
-            ret.mat[i][j] = expl(maxi - x.mat[i][j]) / denominator;
+            ret.mat[i][j] = expl(x.mat[i][j] - maxi) / denominator;
         }
     }
     return ret;
@@ -207,13 +207,24 @@ void NN::CalcNN()
 }
 long double NN::LossFunction()
 {
-    long double delta = 1e-7;
+
+    long double d = 0.0000001;
+    long double ret = 0;
+    for (int i = 0; i < batch_size; i++)
+    {
+        ret -= logl(Y.mat[i][ans_data[i].first] + d);
+    }
+    return ret / batch_size;
+
+/*
+    long double delta = 0.0000001;
     long double ret = 0;
     for (int i = 0; i < batch_size; i++)
     {
         ret += -logl(Y.mat[i][ans_data[i].first] + delta);
     }
     return ret;
+*/
 }
 
 void NN::PrintLayerNumber()
