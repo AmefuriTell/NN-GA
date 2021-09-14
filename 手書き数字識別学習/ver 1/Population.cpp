@@ -57,6 +57,7 @@ void Population::evaluate(NN &wb)
 
     //昇順ソート
     std::sort(NowInd.begin(), NowInd.end(), [](const Individual &a, const Individual &b)->bool{return a.score < b.score;});
+    std::cerr << NowInd[0].score << " " << NowInd[1].score << std::endl;
     return;
 }
 
@@ -112,11 +113,15 @@ void Population::alternate(NN &wb)
     //交叉
     for (; i < POP_SIZE; i++)
     {
-        int father = select(), mother = select();
+        //int father = select(), mother = select();
+        int father = rand() % ELITE, mother = rand() % POP_SIZE;
         while (father == mother)
         {
             father = select();
             mother = select();
+
+            father = rand() % ELITE;
+            mother = rand() % POP_SIZE;
         }
         
         //父と母から遺伝子を継ぐ
@@ -137,6 +142,8 @@ void Population::alternate(NN &wb)
 //交叉する親を決定する
 int Population::select()
 {
+
+/*
     int rank;
     long double prob, r = (long double)rand() / RAND_MAX;
     int denom = POP_SIZE * (POP_SIZE + 1) / 2;
@@ -149,6 +156,7 @@ int Population::select()
     }
     
     return rank - 1;
+*/
 }
 
 //最良遺伝子を出力する。
