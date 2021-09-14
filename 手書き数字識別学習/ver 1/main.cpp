@@ -18,7 +18,7 @@ int main()
     //NNの用意
     NN NeuralNetwork(std::vector<int>{28 * 28, 50, 10}, 100);
     NeuralNetwork.InputX(minsts.RandomGetMINSTBatch(100));
-    Population WeightBias(10000, 1000, 1, 28 * 28 * 50 + 50 * 10 + 50 + 10, 0.002, NeuralNetwork);
+    Population WeightBias(10000, 1000, 1, 28 * 28 * 50 + 50 * 10 + 50 + 10, 0.02, NeuralNetwork);
 
     int generation = 10000;
 
