@@ -57,7 +57,7 @@ void Population::evaluate(NN &wb)
 
     //昇順ソート
     std::sort(NowInd.begin(), NowInd.end(), [](const Individual &a, const Individual &b)->bool{return a.score < b.score;});
-    std::cerr << NowInd[0].score << " " << NowInd[1].score << std::endl;
+    //std::cerr << NowInd[0].score << " " << NowInd[1].score << std::endl;
     return;
 }
 
