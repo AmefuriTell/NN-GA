@@ -115,14 +115,13 @@ void Population::alternate(NN &wb)
     {
         //int father = select(), mother = select();
         int father = rand() % ELITE, mother = rand() % POP_SIZE;
-        mother = select();
         while (father == mother)
         {
             //father = select();
-            mother = select();
+            //mother = select();
 
             father = rand() % ELITE;
-            //mother = rand() % POP_SIZE;
+            mother = rand() % POP_SIZE;
         }
         
         //父と母から遺伝子を継ぐ
