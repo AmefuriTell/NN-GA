@@ -207,7 +207,7 @@ void NN::CalcNN()
 }
 long double NN::LossFunction()
 {
-/*
+
     long double d = 0.0000001;
     long double ret = 0;
     for (int i = 0; i < batch_size; i++)
@@ -215,8 +215,8 @@ long double NN::LossFunction()
         ret -= logl(Y.mat[i][ans_data[i].first] + d);
     }
     return ret;
-*/
 
+/*
     long double ret = 0;
     for (int i = 0; i < batch_size; i++)
     {
@@ -227,6 +227,7 @@ long double NN::LossFunction()
         }
     }
     return ret;
+*/
 }
 
 void NN::PrintLayerNumber()

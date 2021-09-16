@@ -108,6 +108,7 @@ void Population::alternate(NN &wb)
     for (i = 0; i < ELITE; i++)
     {
         NextInd[i] = NowInd[i];
+        NextInd[i].Annealing(5, wb);
     }
 
     //交叉
@@ -128,7 +129,13 @@ void Population::alternate(NN &wb)
         NextInd[i].crossover(NowInd[mother], NowInd[father]);
 
         //突然変異させる
-        NextInd[i].mutate();
+        //NextInd[i].mutate();
+
+        //焼きなまし
+        NextInd[i].Annealing(10, wb);
+
+        //子供ができる様子をプリント
+        //std::cerr << i << "個交配終わり" << std::endl;
     }
 
     //現世代を更新

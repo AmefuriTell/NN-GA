@@ -85,6 +85,44 @@ void Individual::evaluate(NN &wb)
     score = wb.LossFunction();
 }
 
+
+//焼きなまし
+void Individual::Annealing(int t, NN &wb)
+{
+    Individual tmp = *this;
+    long double start_score = this->score;
+    int time_limit = t, tt = t;
+    while (tt--)
+    {
+        //近傍をとる(突然変異)
+        tmp = *this;
+        tmp.mutate();
+
+        //スコアを再計算
+        tmp.evaluate(wb);
+
+        if(prob(start_score, tmp.score, (time_limit - tt), time_limit) > (long double)rand() / RAND_MAX)
+        {
+            *this = tmp;
+            start_score = tmp.score;
+        }
+    }
+}
+
+long double Individual::prob(long double score, long double new_score, int now_time, int time_limit)
+{
+    long double d = new_score - score;
+    if(d <= 0)return 1;
+    return expl(d / temperature(now_time, time_limit));
+}
+
+long double Individual::temperature(int now_time, int time_limit)
+{
+    long double x = (long double)now_time / time_limit;
+    long double start_tmp = 30, end_tmp = 5;
+    return powl(start_tmp, 1 - x) * powl(end_tmp, x);
+}
+
 void Individual::Save(std::string file_name)
 {
     std::ofstream outputfile(file_name);

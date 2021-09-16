@@ -28,6 +28,8 @@ class Individual
         void crossover(Individual&, Individual&);//交叉
         void mutate();//突然変異
 
+        void Annealing(int, NN&);//焼きなまし
+
         void Save(std::string);
 
         int GEN_MAX, POP_SIZE, ELIET, CHROMO_SIZE;
@@ -36,6 +38,8 @@ class Individual
         long double score;
     private:
         void init(int, int, int, int, long double);
+        long double prob(long double, long double, int, int);
+        long double temperature(int, int);
 };
 
 #endif
