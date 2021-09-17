@@ -8,3 +8,8 @@ hsptmp
 *.result
 *.bmp
 *bat
+Images
+labels
+*.gz
+*.idx3-ubyte
+*.idx1-ubyte
