@@ -13,3 +13,5 @@ labels
 *.gz
 *.idx3-ubyte
 *.idx1-ubyte
+手書き数字識別学習/ver 0/in.txt
+手書き数字識別学習/ver 0/out.txt
