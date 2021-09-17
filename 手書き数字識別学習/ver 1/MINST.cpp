@@ -19,7 +19,7 @@ void MINST::LoadData(char *data_f, int i)
 
     for (int j = 0; j < 28 * 28; j++)
     {
-        data[j] = (double)((unsigned char)data_f[i * 28 * 28 + j + 16]) / 255.0L;
+        data[j] = (double)((unsigned char)data_f[i * 28 * 28 + j + 16]) / 255.0;
     }
 }
 

@@ -3,7 +3,7 @@
 
 #include <bits/stdc++.h>
 
-using Matrix = std::vector<std::vector<long double>>;
+using Matrix = std::vector<std::vector<double>>;
 class matrix
 {
     public:

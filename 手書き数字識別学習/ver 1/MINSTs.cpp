@@ -42,9 +42,9 @@ MINST MINSTs::RandomGetMINST()
     return minsts[rand() % size];
 }
 
-std::vector<std::pair<int, std::vector<long double>>> MINSTs::RandomGetMINSTBatch(int batch)
+std::vector<std::pair<int, std::vector<double>>> MINSTs::RandomGetMINSTBatch(int batch)
 {
-    std::vector<std::pair<int, std::vector<long double>>> ret(batch);
+    std::vector<std::pair<int, std::vector<double>>> ret(batch);
     for (int i = 0; i < batch; i++)
     {
         MINST d = RandomGetMINST();

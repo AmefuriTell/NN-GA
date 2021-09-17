@@ -13,7 +13,7 @@ Individual::Individual()
 {
     init(1000, 1000, 1, 1000, 0.1);
 }
-Individual::Individual(int gen_max, int pop_size, int elite, int chromo_size, long double mutate_prob)
+Individual::Individual(int gen_max, int pop_size, int elite, int chromo_size, double mutate_prob)
 {
     init(gen_max, pop_size, elite, chromo_size, mutate_prob);
 }
@@ -24,7 +24,7 @@ Individual::~Individual()
 }
 
 //個体を初期化(各個体1回しか発動させない)
-void Individual::init(int gen_max, int pop_size, int elite, int chromo_size, long double mutate_prob)
+void Individual::init(int gen_max, int pop_size, int elite, int chromo_size, double mutate_prob)
 {
     srand((unsigned int)time(NULL));
 
@@ -35,7 +35,7 @@ void Individual::init(int gen_max, int pop_size, int elite, int chromo_size, lon
     MUTATE_PROB = mutate_prob;
 
     chromo.resize(CHROMO_SIZE);
-    score = 0.0L;
+    score = 0.0;
 
     create_now_chromo();
 }
@@ -45,17 +45,39 @@ void Individual::create_now_chromo()
 {
     for (int i = 0; i < CHROMO_SIZE; i++)
     {
-        chromo[i] = rand_normal(0, 1.0);
+        chromo[i] = (double)(rand() % 1000) / 1000;
+        if(rand() % 2)chromo[i] *= -1;
+        //chromo[i] = rand_normal(0, 1.0);
     }
 }
 
 //交叉
-void Individual::crossover(Individual &father, Individual &mother)
+void Individual::crossover(Individual &father, Individual &mother, NN &wb)
 {
+    Individual c1 = father, c2 = mother;
     //一様交叉
     for (int i = 0; i < CHROMO_SIZE; i++)
     {
-        chromo[i] = (rand() % 2) ? father.chromo[i] : mother.chromo[i];
+        if(rand() % 2)
+        {
+            std::swap(c1.chromo[i], c2.chromo[i]);
+        }
+        //chromo[i] = (rand() % 2) ? father.chromo[i] : mother.chromo[i];
+    }
+
+    //出来た二つを比べて、小さいほうを採用する
+    c1.evaluate(wb);
+    c2.evaluate(wb);
+
+    if(c1.score > c2.score)
+    {
+        chromo = c2.chromo;
+        score = c2.score;
+    }
+    else
+    {
+        chromo = c1.chromo;
+        score = c2.score;
     }
 }
 
@@ -64,9 +86,11 @@ void Individual::mutate()
 {
     for (int i = ELIET; i < CHROMO_SIZE; i++)
     {
-        if((long double)rand() / RAND_MAX < MUTATE_PROB)
+        if((double)rand() / RAND_MAX < MUTATE_PROB)
         {
-            chromo[i] = rand_normal(0, 1.0);
+            chromo[i] = (double)(rand() % 1000) / 1000;
+            if(rand() % 2)chromo[i] *= -1;
+            //chromo[i] = rand_normal(0, 1.0);
         }
     }
 }
@@ -101,25 +125,29 @@ void Individual::Annealing(int t, NN &wb)
         //スコアを再計算
         tmp.evaluate(wb);
 
-        if(prob(start_score, tmp.score, (time_limit - tt), time_limit) > (long double)rand() / RAND_MAX)
+        if(prob(start_score, tmp.score, (time_limit - tt), time_limit) > (double)rand() / RAND_MAX)
         {
+            //std::cerr << "ちゃんと更新したよ" << std::endl;
             *this = tmp;
             start_score = tmp.score;
         }
     }
 }
 
-long double Individual::prob(long double score, long double new_score, int now_time, int time_limit)
+double Individual::prob(double score, double new_score, int now_time, int time_limit)
 {
-    long double d = new_score - score;
+    double d = new_score - score;
     if(d <= 0)return 1;
     return expl(d / temperature(now_time, time_limit));
 }
 
-long double Individual::temperature(int now_time, int time_limit)
+double Individual::temperature(int now_time, int time_limit)
 {
-    long double x = (long double)now_time / time_limit;
-    long double start_tmp = 30, end_tmp = 5;
+    double x = (double)now_time / time_limit;
+    double start_tmp = 20.0L, end_tmp = 5.0L;
+
+    //return start_tmp + (end_tmp - start_tmp) * x;
+
     return powl(start_tmp, 1 - x) * powl(end_tmp, x);
 }
 

@@ -9,7 +9,7 @@ class Population
 {
     public:
         Population();
-        Population(int, int, int, int, long double, NN&);
+        Population(int, int, int, int, double, NN&);
         ~Population();
 
         void alternate();
@@ -21,7 +21,7 @@ class Population
 
         int POP_SIZE, ELITE, now_generation;
     private:
-        void init(int, int, int, int, long double, NN&);
+        void init(int, int, int, int, double, NN&);
         void evaluate();
         void evaluate(NN&);
         int select();

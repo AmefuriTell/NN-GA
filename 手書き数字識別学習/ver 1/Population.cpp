@@ -7,7 +7,7 @@ Population::Population()
     NN wb;
     init(1000, 1000, 1, 1000, 0.1, wb);
 }
-Population::Population(int gen_max, int pop_size, int elite, int chromo_size, long double mutate_prob, NN &wb)
+Population::Population(int gen_max, int pop_size, int elite, int chromo_size, double mutate_prob, NN &wb)
 {
     init(gen_max, pop_size, elite, chromo_size, mutate_prob, wb);
 }
@@ -18,7 +18,7 @@ Population::~Population()
 }
 
 //初期化(1回のみ)
-void Population::init(int gen_max, int pop_size, int elite, int chromo_size, long double mutate_prob, NN &wb)
+void Population::init(int gen_max, int pop_size, int elite, int chromo_size, double mutate_prob, NN &wb)
 {
     POP_SIZE = pop_size;
     ELITE = elite;
@@ -57,44 +57,6 @@ void Population::evaluate(NN &wb)
 
     //昇順ソート
     std::sort(NowInd.begin(), NowInd.end(), [](const Individual &a, const Individual &b)->bool{return a.score < b.score;});
-    //std::cerr << NowInd[0].score << " " << NowInd[1].score << std::endl;
-    return;
-}
-
-//世代交代
-void Population::alternate()
-{
-    int i;
-
-    //エリートを保存
-    for (i = 0; i < ELITE; i++)
-    {
-        NextInd[i] = NowInd[i];
-    }
-
-    //交叉
-    for (; i < POP_SIZE; i++)
-    {
-        int father = select(), mother = select();
-        while (father == mother)
-        {
-            father = select();
-            mother = select();
-        }
-        
-        //父と母から遺伝子を継ぐ
-        NextInd[i].crossover(NowInd[mother], NowInd[father]);
-
-        //突然変異させる
-        NextInd[i].mutate();
-    }
-
-    //現世代を更新
-    NowInd = NextInd;
-    now_generation ++;
-
-    //評価
-    evaluate();
 }
 
 void Population::alternate(NN &wb)
@@ -102,8 +64,8 @@ void Population::alternate(NN &wb)
 
     Save("result/" + std::to_string(now_generation) + ".result");
     std::cerr << "The " << now_generation << " generation of elites was saved. score is " << NowInd[0].score << "." << std::endl;
+    
     int i;
-
     //エリートを保存
     for (i = 0; i < ELITE; i++)
     {
@@ -126,13 +88,10 @@ void Population::alternate(NN &wb)
         }
         
         //父と母から遺伝子を継ぐ
-        NextInd[i].crossover(NowInd[mother], NowInd[father]);
+        NextInd[i].crossover(NowInd[mother], NowInd[father], wb);
 
         //突然変異させる
-        //NextInd[i].mutate();
-
-        //焼きなまし
-        NextInd[i].Annealing(10, wb);
+        NextInd[i].mutate();
 
         //子供ができる様子をプリント
         //std::cerr << i << "個交配終わり" << std::endl;
@@ -143,7 +102,8 @@ void Population::alternate(NN &wb)
     now_generation++;
 
     //評価
-    evaluate(wb);
+    //evaluate(wb);
+    std::sort(NowInd.begin(), NowInd.end(), [](const Individual &a, const Individual &b)->bool{return a.score < b.score;});
 }
 
 //交叉する親を決定する
@@ -151,14 +111,13 @@ int Population::select()
 {
 
     int rank;
-    long double prob, r = (long double)rand() / RAND_MAX;
+    double prob = 0.0, r = (double)rand() / RAND_MAX;
     int denom = POP_SIZE * (POP_SIZE + 1) / 2;
 
     for (rank = 1; rank < POP_SIZE; rank++)
     {
-        prob = (long double)(POP_SIZE - rank + 1) / denom;
-        if(r >= prob)break;
-        r -= prob;
+        prob += (double)(POP_SIZE - rank + 1) / denom;
+        if(r <= prob)break;
     }
     
     return rank - 1;

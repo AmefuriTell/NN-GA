@@ -4,7 +4,7 @@ matrix::matrix()
 {
 
 }
-matrix::matrix(std::vector<std::vector<long double>> m)
+matrix::matrix(std::vector<std::vector<double>> m)
 {
     mat = m;
 }
@@ -35,7 +35,7 @@ matrix matrix::operator + (matrix obj)
     int thisrow = this->mat.size();
     int thiscol = this->mat[0].size();
 
-    matrix ans(std::vector<std::vector<long double>>(objrow, std::vector<long double>(objcol)));
+    matrix ans(std::vector<std::vector<double>>(objrow, std::vector<double>(objcol)));
 
     //std::cout << objrow << " " << objcol << " " << thisrow << " " << thiscol << std::endl;
 
@@ -60,7 +60,7 @@ matrix matrix::operator * (matrix obj)
     int thisrow = this->mat.size();
     int thiscol = this->mat[0].size();
 
-    matrix ans(std::vector<std::vector<long double>>(thisrow, std::vector<long double>(objcol)));
+    matrix ans(std::vector<std::vector<double>>(thisrow, std::vector<double>(objcol)));
 
     //std::cout << objrow << " " << objcol << " " << thisrow << " " << thiscol << std::endl;
 
@@ -71,7 +71,7 @@ matrix matrix::operator * (matrix obj)
     {
         for (int bc = 0; bc < objcol; bc++)
         {
-            long double term = 0.0L;
+            double term = 0.0;
             for (int ac = 0; ac < thiscol; ac++)
             {
                 term += this->mat[ar][ac] * obj.mat[ac][bc];

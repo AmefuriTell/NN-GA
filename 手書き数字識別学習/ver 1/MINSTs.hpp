@@ -10,7 +10,7 @@ class MINSTs
         MINSTs(int);
         void LoadMINSTs();
         MINST RandomGetMINST();
-        std::vector<std::pair<int, std::vector<long double>>> RandomGetMINSTBatch(int);
+        std::vector<std::pair<int, std::vector<double>>> RandomGetMINSTBatch(int);
 
         int size;
         std::vector<MINST> minsts;

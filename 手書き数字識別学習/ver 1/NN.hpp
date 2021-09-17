@@ -10,7 +10,7 @@ class NN
     //変数
     std::vector<int> layer_num;
     int batch_size;
-    std::vector<std::pair<int, std::vector<long double>>> ans_data;
+    std::vector<std::pair<int, std::vector<double>>> ans_data;
     matrix X, Y;
     std::vector<matrix> W, B;
 
@@ -24,19 +24,19 @@ class NN
     //関数
     void init();
     void InputX();
-    void InputX(std::vector<std::pair<int, std::vector<long double>>>);
+    void InputX(std::vector<std::pair<int, std::vector<double>>>);
     void InputBias();
     void InputWeight();
-    void InputWB(std::vector<long double>);
-    long double sigmoid(long double);
+    void InputWB(std::vector<double>);
+    double sigmoid(double);
     matrix sigmoid(matrix);
-    long double relu(long double);
+    double relu(double);
     matrix relu(matrix);
     matrix identity_function(matrix);
     matrix softmax(matrix);
     void CalcNN();
     void PrintLayerNumber();
-    long double LossFunction();
+    double LossFunction();
 
     private:
     

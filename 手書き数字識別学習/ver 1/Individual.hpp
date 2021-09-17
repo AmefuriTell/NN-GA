@@ -19,13 +19,13 @@ class Individual
 {
     public:
         Individual();
-        Individual(int, int, int, int, long double);
+        Individual(int, int, int, int, double);
         ~Individual();
 
         void create_now_chromo();//完全新種を作成
         void evaluate();//評価値を算出
         void evaluate(NN&);
-        void crossover(Individual&, Individual&);//交叉
+        void crossover(Individual&, Individual&, NN&);//交叉
         void mutate();//突然変異
 
         void Annealing(int, NN&);//焼きなまし
@@ -33,13 +33,13 @@ class Individual
         void Save(std::string);
 
         int GEN_MAX, POP_SIZE, ELIET, CHROMO_SIZE;
-        long double MUTATE_PROB;
-        std::vector<long double> chromo;
-        long double score;
+        double MUTATE_PROB;
+        std::vector<double> chromo;
+        double score;
     private:
-        void init(int, int, int, int, long double);
-        long double prob(long double, long double, int, int);
-        long double temperature(int, int);
+        void init(int, int, int, int, double);
+        double prob(double, double, int, int);
+        double temperature(int, int);
 };
 
 #endif

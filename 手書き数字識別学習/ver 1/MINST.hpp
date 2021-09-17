@@ -13,7 +13,7 @@ class MINST
         void LoadAns(char*, int);
 
         int ans;
-        std::vector<long double> data;
+        std::vector<double> data;
 };
 
 #endif

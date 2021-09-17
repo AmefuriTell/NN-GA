@@ -92,7 +92,7 @@ void NN::InputBias()
     }
     return;
 }
-void NN::InputX(std::vector<std::pair<int, std::vector<long double>>> in)
+void NN::InputX(std::vector<std::pair<int, std::vector<double>>> in)
 {
     ans_data = in;
     for (int i = 0; i < batch_size; i++)
@@ -105,7 +105,7 @@ void NN::InputX(std::vector<std::pair<int, std::vector<long double>>> in)
     
     return;
 }
-void NN::InputWB(std::vector<long double> chromo)
+void NN::InputWB(std::vector<double> chromo)
 {
     int count = 0;
     for (int i = 0; i < layer_num.size() - 1; i++)
@@ -136,7 +136,7 @@ void NN::InputWB(std::vector<long double> chromo)
     return;
 }
 
-long double NN::sigmoid(long double x)
+double NN::sigmoid(double x)
 {
     return 1.0L / (1.0L + expl(-x));
 }
@@ -152,7 +152,7 @@ matrix NN::sigmoid(matrix x)
     }
     return ans;
 }
-long double NN::relu(long double x)
+double NN::relu(double x)
 {
     if(x > 0)return x;
     return 0.0L;
@@ -178,7 +178,7 @@ matrix NN::softmax(matrix x)
     matrix ret = x;
     for (int i = 0; i < batch_size; i++)
     {
-        long double denominator = 0, maxi = x.mat[i][0];
+        double denominator = 0, maxi = x.mat[i][0];
         for (int j = 1; j < 10; j++)maxi = std::max(maxi, x.mat[i][j]);
         
         for (int j = 0; j < 10; j++)
@@ -205,14 +205,14 @@ void NN::CalcNN()
 
     return;
 }
-long double NN::LossFunction()
+double NN::LossFunction()
 {
 
-    long double d = 0.0000001;
-    long double ret = 0;
+    double d = 0.0000001;
+    double ret = 0;
     for (int i = 0; i < batch_size; i++)
     {
-        ret -= logl(Y.mat[i][ans_data[i].first] + d);
+        ret -= log(Y.mat[i][ans_data[i].first] + d);
     }
     return ret;
 
