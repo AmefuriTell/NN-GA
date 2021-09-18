@@ -67,7 +67,7 @@ void Population::alternate(NN &wb)
         NowInd[i].pop_elite_cnt = pop_elite_cnt;
         NextInd[i] = NowInd[i];
 
-        NextInd[i].Annealing(pop_elite_cnt, wb);
+        //NextInd[i].Annealing(pop_elite_cnt, wb);
 
         pop_elite_cnt = std::max(pop_elite_cnt, NowInd[i].elite_cnt);
     }

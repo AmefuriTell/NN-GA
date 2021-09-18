@@ -68,14 +68,13 @@ void Individual::crossover(Individual &father, Individual &mother, NN &wb)
     }
 
     //突然変異
-    //c1.Annealing(10, wb);
-    //c2.Annealing(10, wb);
+    c1.Annealing(pop_elite_cnt, wb);
+    c2.Annealing(pop_elite_cnt, wb);
 
-    c1.mutate();
-    c2.mutate();
-
-    c1.evaluate(wb);
-    c2.evaluate(wb);
+    //c1.mutate();
+    //c2.mutate();
+    //c1.evaluate(wb);
+    //c2.evaluate(wb);
 
     *this = (c1.score < c2.score) ? c1 : c2;
     elite_cnt = 0;
