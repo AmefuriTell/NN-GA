@@ -23,7 +23,6 @@ class Individual
         ~Individual();
 
         void create_now_chromo();//完全新種を作成
-        void evaluate();//評価値を算出
         void evaluate(NN&);
         void crossover(Individual&, Individual&, NN&);//交叉
         void mutate();//突然変異
@@ -36,6 +35,7 @@ class Individual
         double MUTATE_PROB;
         std::vector<double> chromo;
         double score;
+        int elite_cnt, pop_elite_cnt;
     private:
         void init(int, int, int, int, double);
         double prob(double, double, int, int);

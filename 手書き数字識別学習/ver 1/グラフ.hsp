@@ -1,0 +1,22 @@
+screen 0, 1000, 10000, 0, 0, 0
+
+notesel results
+dirlist results, "result/*.result"
+
+results_max = notemax
+repeat results_max
+    i = cnt
+    notesel results
+    noteget file_name, i
+
+    notesel result
+    noteload "result/" + file_name
+    noteget score, 0
+
+	if(i == 0){
+		pset i, int(score)
+	}else{
+		line i - 1, bscore, i, int(score)
+	}
+	bscore = int(score)
+loop

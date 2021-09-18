@@ -138,7 +138,7 @@ void NN::InputWB(std::vector<double> chromo)
 
 double NN::sigmoid(double x)
 {
-    return 1.0L / (1.0L + expl(-x));
+    return 1.0L / (1.0L + exp(-x));
 }
 matrix NN::sigmoid(matrix x)
 {
@@ -155,19 +155,18 @@ matrix NN::sigmoid(matrix x)
 double NN::relu(double x)
 {
     if(x > 0)return x;
-    return 0.0L;
+    return 0.0;
 }
 matrix NN::relu(matrix x)
 {
-    matrix ans = x;
     for (int i = 0; i < x.mat.size(); i++)
     {
         for (int j = 0; j < x.mat[i].size(); j++)
         {
-            ans.mat[i][j] = relu(x.mat[i][j]);
+            x.mat[i][j] = relu(x.mat[i][j]);
         }
     }
-    return ans;
+    return x;
 }
 matrix NN::identity_function(matrix x)
 {
@@ -183,11 +182,11 @@ matrix NN::softmax(matrix x)
         
         for (int j = 0; j < 10; j++)
         {
-            denominator += expl(x.mat[i][j] - maxi);
+            denominator += exp(x.mat[i][j] - maxi);
         }
         for (int j = 0; j < 10; j++)
         {
-            ret.mat[i][j] = expl(x.mat[i][j] - maxi) / denominator;
+            ret.mat[i][j] = exp(x.mat[i][j] - maxi) / denominator;
         }
     }
     return ret;
@@ -198,7 +197,7 @@ void NN::CalcNN()
     for (int i = 0; i < layer_num.size() - 1; i++)
     {
         A = Z * W[i] + B[i];
-        Z = sigmoid(A);
+        Z = relu(A);
     }
     Y = identity_function(A);
     Y = softmax(Y);

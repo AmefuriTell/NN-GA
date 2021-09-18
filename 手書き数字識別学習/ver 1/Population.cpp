@@ -20,6 +20,8 @@ Population::~Population()
 //初期化(1回のみ)
 void Population::init(int gen_max, int pop_size, int elite, int chromo_size, double mutate_prob, NN &wb)
 {
+    srand((unsigned int)time(NULL));
+
     POP_SIZE = pop_size;
     ELITE = elite;
     now_generation = 1;
@@ -36,18 +38,6 @@ void Population::init(int gen_max, int pop_size, int elite, int chromo_size, dou
     evaluate(wb);
 }
 
-//評価し、ソート
-void Population::evaluate()
-{
-    for (int i = 0; i < POP_SIZE; i++)
-    {
-        NowInd[i].evaluate();
-    }
-
-    //昇順ソート
-    std::sort(NowInd.begin(), NowInd.end(), [](const Individual &a, const Individual &b)->bool{return a.score < b.score;});
-}
-
 void Population::evaluate(NN &wb)
 {
     for (int i = 0; i < POP_SIZE; i++)
@@ -61,40 +51,45 @@ void Population::evaluate(NN &wb)
 
 void Population::alternate(NN &wb)
 {
-
     Save("result/" + std::to_string(now_generation) + ".result");
-    std::cerr << "The " << now_generation << " generation of elites was saved. score is " << NowInd[0].score << "." << std::endl;
+    std::cerr << "The " << now_generation << " generation of elites was saved. score is " << NowInd[0].score << ". " << NowInd[0].elite_cnt << std::endl;
     
     int i;
+    pop_elite_cnt = 0;
     //エリートを保存
     for (i = 0; i < ELITE; i++)
     {
-        NextInd[i] = NowInd[i];
-        NextInd[i].Annealing(5, wb);
+        NowInd[i].elite_cnt++;
     }
+
+    for (i = 0; i < ELITE; i++)
+    {
+        NowInd[i].pop_elite_cnt = pop_elite_cnt;
+        NextInd[i] = NowInd[i];
+
+        NextInd[i].Annealing(pop_elite_cnt, wb);
+
+        pop_elite_cnt = std::max(pop_elite_cnt, NowInd[i].elite_cnt);
+    }
+    
 
     //交叉
     for (; i < POP_SIZE; i++)
     {
-        //int father = select(), mother = select();
-        int father = rand() % ELITE, mother = rand() % POP_SIZE;
+        NextInd[i].pop_elite_cnt = pop_elite_cnt;
+        int father = select(), mother = select();
+        //int father = rand() % ELITE, mother = rand() % POP_SIZE;
         while (father == mother)
         {
-            //father = select();
-            //mother = select();
+            father = select();
+            mother = select();
 
-            father = rand() % ELITE;
-            mother = rand() % POP_SIZE;
+            //father = rand() % ELITE;
+            //mother = rand() % POP_SIZE;
         }
         
-        //父と母から遺伝子を継ぐ
+        //父と母から遺伝子を継ぐ(遺伝子交配とともに、突然変異させる。)
         NextInd[i].crossover(NowInd[mother], NowInd[father], wb);
-
-        //突然変異させる
-        NextInd[i].mutate();
-
-        //子供ができる様子をプリント
-        //std::cerr << i << "個交配終わり" << std::endl;
     }
 
     //現世代を更新
